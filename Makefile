@@ -37,9 +37,9 @@ endif
 # Build stuff
 #
 ###############################################################################
-all: kafs-client
+all: aklog
 
-kafs-client: kafs-client.c Makefile
+aklog: aklog.c Makefile
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
 
 ###############################################################################
