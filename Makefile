@@ -40,7 +40,7 @@ endif
 all: aklog
 
 aklog: aklog.c Makefile
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< -lkrb5 -lcrypto -lkeyutils
 
 ###############################################################################
 #

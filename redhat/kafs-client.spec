@@ -8,6 +8,13 @@ License:	GPLv2+
 URL:		https://www.infradead.org/~dhowells/kafs/
 Source0:	https://www.infradead.org/~dhowells/kafs/kafs-client-%{version}.tar.bz2
 
+BuildRequires: krb5-devel
+BuildRequires: keyutils-libs-devel
+BuildRequires: openssl-devel
+Requires: krb5-libs
+Requires: keyutils-libs
+Requires: openssl-libs
+
 BuildRequires: systemd-units
 Requires(post): systemd-units
 Requires(preun): systemd-units
