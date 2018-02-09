@@ -1,10 +1,10 @@
-CFLAGS		:= -g -O2 -Wall -Wsign-compare
-INSTALL		:= install
-DESTDIR		:=
-ETCDIR		:= /etc
-BINDIR		:= /bin
-MANDIR		:= /usr/share/man
-SPECFILE	:= redhat/kafs-client.spec
+CFLAGS		= -g -O2 -Wall -Wsign-compare
+INSTALL		= install
+DESTDIR		=
+ETCDIR		= /etc
+BINDIR		= /usr/bin
+MANDIR		= /usr/share/man
+SPECFILE	= redhat/kafs-client.spec
 
 LNS		:= ln -sf
 
