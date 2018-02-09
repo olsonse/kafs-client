@@ -63,6 +63,7 @@ install -m 644 afs.mount %{buildroot}%{_unitdir}/afs.mount
 
 %files
 %doc README
+/afs
 %{_bindir}/*
 %{_unitdir}/*
 %{_mandir}/*/*

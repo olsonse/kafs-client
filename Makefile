@@ -47,11 +47,12 @@ aklog: aklog.c Makefile
 # Install everything
 #
 ###############################################################################
-MAN1	:= $(DESTDIR)$(MANDIR)/man1
+MAN1	:= $(MANDIR)/man1
 
 install: all
 	$(INSTALL) -D -m 0755 aklog $(DESTDIR)$(BINDIR)/aklog
-	$(INSTALL) -D -m 0644 aklog.1 $(MAN1)/aklog.1
+	$(INSTALL) -D -m 0644 aklog.1 $(DESTDIR)$(MAN1)/aklog.1
+	mkdir -m755 $(DESTDIR)/afs
 
 ###############################################################################
 #
