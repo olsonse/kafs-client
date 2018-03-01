@@ -3,7 +3,7 @@
 Name:		kafs-client
 Version:	0.1
 Release:	1%{?dist}%{?buildid}
-Summary:	kAFS basic tools and /afs dynamic root
+Summary:	kAFS basic tools and /kafs dynamic root
 License:	GPLv2+
 URL:		https://www.infradead.org/~dhowells/kafs/
 Source0:	https://www.infradead.org/~dhowells/kafs/kafs-client-%{version}.tar.bz2
@@ -25,7 +25,7 @@ Requires: selinux-policy-base >= 3.7.19-5
 
 %description
 Provide basic AFS-compatible tools for kAFS and mount the dynamic root
-on /afs.
+on /kafs.
 
 %global docdir %{_docdir}/kafs-client
 
@@ -50,20 +50,20 @@ make DESTDIR=%{buildroot} install \
 	MANDIR=%{_mandir} \
 	CFLAGS="-Wall $RPM_OPT_FLAGS -Werror"
 
-install -m 644 afs.mount %{buildroot}%{_unitdir}/afs.mount
+install -m 644 kafs.mount %{buildroot}%{_unitdir}/kafs.mount
 
 %post
-%systemd_post afs.mount
+%systemd_post kafs.mount
 
 %preun
-%systemd_preun afs.mount
+%systemd_preun kafs.mount
 
 %postun
-%systemd_postun_with_restart afs.mount
+%systemd_postun_with_restart kafs.mount
 
 %files
 %doc README
-/afs
+/kafs
 %{_bindir}/*
 %{_unitdir}/*
 %{_mandir}/*/*

@@ -1,10 +1,10 @@
 [Unit]
-Description=AFS Dynamic Root mount
-ConditionPathExists=/afs
+Description=kAFS Dynamic Root mount
+ConditionPathExists=/kafs
 
 [Mount]
 What=none
-Where=/afs
+Where=/kafs
 Type=afs
 Options=_netdev,dyn
 

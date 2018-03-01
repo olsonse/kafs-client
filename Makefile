@@ -37,9 +37,9 @@ endif
 # Build stuff
 #
 ###############################################################################
-all: aklog
+all: aklog-kafs
 
-aklog: aklog.c Makefile
+aklog-kafs: aklog-kafs.c Makefile
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< -lkrb5 -lcrypto -lkeyutils
 
 ###############################################################################
@@ -50,9 +50,9 @@ aklog: aklog.c Makefile
 MAN1	:= $(MANDIR)/man1
 
 install: all
-	$(INSTALL) -D -m 0755 aklog $(DESTDIR)$(BINDIR)/aklog
-	$(INSTALL) -D -m 0644 aklog.1 $(DESTDIR)$(MAN1)/aklog.1
-	mkdir -m755 $(DESTDIR)/afs
+	$(INSTALL) -D -m 0755 aklog-kafs $(DESTDIR)$(BINDIR)/aklog-kafs
+	$(INSTALL) -D -m 0644 aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
+	mkdir -m755 $(DESTDIR)/kafs
 
 ###############################################################################
 #
@@ -60,7 +60,7 @@ install: all
 #
 ###############################################################################
 clean:
-	$(RM) aklog
+	$(RM) aklog-kafs
 	$(RM) *.o *~
 	$(RM) debugfiles.list debugsources.list
 
