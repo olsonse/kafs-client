@@ -1,9 +1,10 @@
 CFLAGS		= -g -O2 -Wall -Wsign-compare
 INSTALL		= install
 DESTDIR		=
-ETCDIR		= /etc
+ETCDIR		= /etc/kafs
 BINDIR		= /usr/bin
 MANDIR		= /usr/share/man
+DATADIR		= /usr/share/kafs-client
 SPECFILE	= redhat/kafs-client.spec
 
 LNS		:= ln -sf
@@ -37,10 +38,8 @@ endif
 # Build stuff
 #
 ###############################################################################
-all: aklog-kafs
-
-aklog-kafs: aklog-kafs.c Makefile
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< -lkrb5 -lcrypto -lkeyutils
+all:
+	$(MAKE) -C src all
 
 ###############################################################################
 #
@@ -50,9 +49,13 @@ aklog-kafs: aklog-kafs.c Makefile
 MAN1	:= $(MANDIR)/man1
 
 install: all
-	$(INSTALL) -D -m 0755 aklog-kafs $(DESTDIR)$(BINDIR)/aklog-kafs
-	$(INSTALL) -D -m 0644 aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
-	mkdir -m755 $(DESTDIR)/kafs
+	$(MAKE) -C src install
+	$(INSTALL) -D -m 0644 man/aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
+	$(INSTALL) -D -m 0644 man/aklog.1 $(DESTDIR)$(MAN1)/aklog.1
+	$(INSTALL) -D -m 0644 conf/cellservdb.conf $(DESTDIR)$(DATADIR)/cellservdb.conf
+	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/cellservdb.conf
+	mkdir -m755 $(DESTDIR)$(ETCDIR)/cellservdb.d
+	mkdir -m755 $(DESTDIR)/afs
 
 ###############################################################################
 #
@@ -60,11 +63,11 @@ install: all
 #
 ###############################################################################
 clean:
-	$(RM) aklog-kafs
-	$(RM) *.o *~
+	$(MAKE) -C src clean
 	$(RM) debugfiles.list debugsources.list
 
 distclean: clean
+	$(MAKE) -C src distclean
 	$(RM) -r rpmbuild $(TARBALL)
 
 ###############################################################################
