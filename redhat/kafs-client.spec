@@ -1,4 +1,6 @@
 # % define buildid .local
+%global libapivermajor 0
+%global libapiversion %{libapivermajor}.1
 
 Name:		kafs-client
 Version:	0.1
@@ -17,7 +19,6 @@ BuildRequires: openssl-devel
 # kAFS config files:
 #	/etc/kafs/cellservdb.conf
 #
-%global confdir %{_sysconfdir}/kafs
 %global datadir %{_datarootdir}/kafs
 Requires: keyutils
 # >= 1.5.11
@@ -31,6 +32,22 @@ Requires: selinux-policy-base >= 3.7.19-5
 %description
 Provide basic AFS-compatible tools for kAFS and systemd scripts to mount the
 dynamic root on /afs and preload the cell database.
+
+%package libs
+Summary: Library of routines for dealing with kAFS
+Requires: %{name}%{?_isa} = %{version}-%{release}
+
+%description libs
+Provide a library of shareable routines for dealing with the kAFS
+filesystem.  These provide things like configuration parsing and DNS lookups.
+
+%package libs-devel
+Summary: Library of routines for dealing with kAFS
+Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+
+%description libs-devel
+Provide a library of shareable routines for dealing with the kAFS
+filesystem.  These provide things like configuration parsing and DNS lookups.
 
 #
 # We generate a compatibility package that makes kafs look like OpenAFS, but it
@@ -53,31 +70,38 @@ another AFS implementation (such as OpenAFS).
 
 %build
 make all \
-	ETCDIR=%{etcdir} \
+	ETCDIR=%{_sysconfdir} \
 	BINDIR=%{_bindir} \
-	MANDIR=%{_mandir} \
+	SBINDIR=%{_sbindir} \
 	DATADIR=%{datadir} \
+	INCLUDEDIR=%{_includedir} \
+	LIBDIR=%{_libdir} \
+	LIBEXECDIR=%{_libexecdir} \
+	MANDIR=%{_mandir} \
 	CFLAGS="-Wall -Werror $RPM_OPT_FLAGS $RPM_LD_FLAGS $ARCH_OPT_FLAGS"
 
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{confdir}
-mkdir -p %{buildroot}%{datadir}
+mkdir -p %{buildroot}%{_sysconfdir}
+mkdir -p %{buildroot}%{_datarootdir}
 
 make DESTDIR=%{buildroot} install \
-	ETCDIR=%{confdir} \
-	DATADIR=%{datadir} \
+	ETCDIR=%{_sysconfdir} \
+	BINDIR=%{_bindir} \
 	SBINDIR=%{_sbindir} \
+	DATADIR=%{datadir} \
+	INCLUDEDIR=%{_includedir} \
+	LIBDIR=%{_libdir} \
+	LIBEXECDIR=%{_libexecdir} \
 	MANDIR=%{_mandir} \
-	CFLAGS="-Wall $RPM_OPT_FLAGS -Werror"
-
-%{__install} -m 644 conf/afs.mount %{buildroot}%{_unitdir}/afs.mount
-%{__install} -m 644 conf/etc.conf %{buildroot}%{confdir}/cellservdb.conf
+	CFLAGS="-Wall -Werror $RPM_OPT_FLAGS $RPM_LD_FLAGS $ARCH_OPT_FLAGS"
 
 # Compat
 ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
+
+%ldconfig_scriptlets libs
 
 %post
 %systemd_post afs.mount
@@ -93,12 +117,23 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %license LICENCE.GPL
 /afs
 %{_bindir}/aklog-kafs
+%{_sbindir}/kafs-check-config
 %{_unitdir}/*
 %{_mandir}/man1/aklog-kafs.1*
-%{confdir}
+%{_libexecdir}/kafs-preload
+%{_libexecdir}/kafs-dns
+%{_sysconfdir}/request-key.d/kafs_dns.conf
+
+%files libs
+%{_libdir}/libkafs_client.so.%{libapiversion}
+%{_libdir}/libkafs_client.so.%{libapivermajor}
 %{datadir}
-%config(noreplace) %{confdir}/cellservdb.conf
-%config(noreplace) %{confdir}/cellservdb.d
+%config(noreplace) %{_sysconfdir}/kafs/cellservdb.conf
+%config(noreplace) %{_sysconfdir}/kafs/cellservdb.d
+
+%files libs-devel
+%{_libdir}/libkafs_client.so
+%{_includedir}/*
 
 %files compat
 %{_bindir}/aklog

@@ -1,6 +1,7 @@
 [Unit]
 Description=kAFS Dynamic Root mount
 ConditionPathExists=/afs
+Wants=kafs-config.service
 
 [Mount]
 What=none

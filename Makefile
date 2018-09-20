@@ -1,10 +1,13 @@
 CFLAGS		= -g -O2 -Wall -Wsign-compare
+MKDIR		= mkdir
 INSTALL		= install
 DESTDIR		=
-ETCDIR		= /etc/kafs
+ETCDIR		= /etc
 BINDIR		= /usr/bin
+LIBEXECDIR	= /usr/libexec
 MANDIR		= /usr/share/man
 DATADIR		= /usr/share/kafs-client
+UNITDIR		= /usr/lib/systemd/system
 SPECFILE	= redhat/kafs-client.spec
 
 LNS		:= ln -sf
@@ -53,9 +56,12 @@ install: all
 	$(INSTALL) -D -m 0644 man/aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
 	$(INSTALL) -D -m 0644 man/aklog.1 $(DESTDIR)$(MAN1)/aklog.1
 	$(INSTALL) -D -m 0644 conf/cellservdb.conf $(DESTDIR)$(DATADIR)/cellservdb.conf
-	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/cellservdb.conf
-	mkdir -m755 $(DESTDIR)$(ETCDIR)/cellservdb.d
-	mkdir -m755 $(DESTDIR)/afs
+	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/kafs/cellservdb.conf
+	$(INSTALL) -D -m 0644 conf/kafs_dns.conf $(DESTDIR)$(ETCDIR)/request-key.d/kafs_dns.conf
+	$(INSTALL) -D -m 0644 conf/kafs-config.service $(DESTDIR)$(UNITDIR)/kafs-config.service
+	$(INSTALL) -D -m 0644 conf/afs.mount $(DESTDIR)$(UNITDIR)/afs.mount
+	$(MKDIR) -m755 $(DESTDIR)$(ETCDIR)/kafs/cellservdb.d
+	$(MKDIR) -m755 $(DESTDIR)/afs
 
 ###############################################################################
 #

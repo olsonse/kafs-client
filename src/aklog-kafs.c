@@ -145,7 +145,7 @@ static void key_derivation_function(krb5_creds *creds, uint8_t *session_key)
 	const EVP_MD *algo = EVP_md5(); /* We use HMAC-MD5 */
 
 	struct kdf_data kdf_data = rxkad_kdf_data;
-	
+
 	for (i = 1; i <= 255; i++) {
 		/* K(i) = PRF(Ks, [i]_2 || Label || 0x00 || [L]_2) */
 		kdf_data.i_2 = i;
@@ -276,7 +276,7 @@ int main(int argc, char **argv)
 
 	for (p = cell; *p; p++)
 		*p = tolower(*p);
-	
+
 	ret = asprintf(&princ, "afs/%s@%s", cell, realm);
 	OSERROR(ret, "asprintf");
 	ret = asprintf(&desc, "afs@%s", cell);
