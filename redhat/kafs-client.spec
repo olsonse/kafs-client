@@ -20,8 +20,9 @@ BuildRequires: openssl-devel
 #	/etc/kafs/cellservdb.conf
 #
 %global datadir %{_datarootdir}/kafs
-Requires: keyutils
-# >= 1.5.11
+
+# keyutils-1.6 request-key allows us to override AFSDB DNS lookups.
+Requires: keyutils >= 1.6
 
 BuildRequires: systemd-units
 Requires(post): systemd-units
