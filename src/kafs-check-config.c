@@ -132,11 +132,11 @@ int main(int argc, char *argv[])
 	if (kafs_init_lookup_context(&ctx) < 0)
 		exit(1);
 
-	if (kafs_init_celldb(filep, &ctx.report) < 0)
+	if (kafs_read_config(filep, &ctx.report) < 0)
 		exit(ctx.report.bad_config ? 3 : 1);
 
 	if (dump_profile)
-		kafs_profile_dump(&kafs_cellserv_profile, 0);
+		kafs_profile_dump(&kafs_config_profile, 0);
 	if (dump_db)
 		kafs_cellserv_dump(kafs_cellserv_db);
 

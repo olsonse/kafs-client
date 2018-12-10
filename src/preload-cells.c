@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 	if (argc > 0)
 		files = (const char **)argv;
 
-	if (kafs_init_celldb(files, &report) < 0)
+	if (kafs_read_config(files, &report) < 0)
 		exit(3);
 
 	do_preload(kafs_cellserv_db, redirect_to_stdout);

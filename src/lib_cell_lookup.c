@@ -16,13 +16,13 @@
 #include <kafs/cellserv.h>
 #include <kafs/profile.h>
 
-static const char *const kafs_std_cellservdb[] = {
-	ETCDIR "/kafs/cellservdb.conf",
+static const char *const kafs_std_config[] = {
+	ETCDIR "/kafs/client.conf",
 	NULL
 };
 
+struct kafs_profile kafs_config_profile = { .name = "<kafsconfig>" };
 struct kafs_cell_db *kafs_cellserv_db;
-struct kafs_profile kafs_cellserv_profile = { .name = "<cellservdb>" };
 
 #define verbose(r, fmt, ...)						\
 	do {								\
@@ -54,19 +54,19 @@ error:
 }
 
 /*
- * Initialise the cell database.
+ * Read the configuration and initialise the cell database.
  */
-int kafs_init_celldb(const char *const *files, struct kafs_report *report)
+int kafs_read_config(const char *const *files, struct kafs_report *report)
 {
 
 	if (!files)
-		files = kafs_std_cellservdb;
+		files = kafs_std_config;
 
 	for (; *files; files++)
-		if (kafs_profile_parse_file(&kafs_cellserv_profile, *files, report) == -1)
+		if (kafs_profile_parse_file(&kafs_config_profile, *files, report) == -1)
 			return -1;
 
-	kafs_cellserv_db = kafs_cellserv_parse_conf(&kafs_cellserv_profile, report);
+	kafs_cellserv_db = kafs_cellserv_parse_conf(&kafs_config_profile, report);
 	if (!kafs_cellserv_db)
 		return -1;
 
@@ -130,7 +130,7 @@ struct kafs_cell *kafs_lookup_cell(const char *cell_name,
 	struct kafs_cell *cell;
 	unsigned int i, j;
 
-	if (!kafs_cellserv_db && kafs_init_celldb(NULL, &ctx->report) < 0)
+	if (!kafs_cellserv_db && kafs_read_config(NULL, &ctx->report) < 0)
 		return NULL;
 
 	cell = kafs_alloc_cell(cell_name, ctx);

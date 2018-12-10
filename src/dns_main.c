@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
 	if (kafs_init_lookup_context(&ctx) < 0)
 		exit(1);
 
-	if (kafs_init_celldb(filep, &ctx.report) < 0)
+	if (kafs_read_config(filep, &ctx.report) < 0)
 		exit(ctx.report.bad_config ? 3 : 1);
 
 	/* Generate the payload */

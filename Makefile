@@ -56,11 +56,11 @@ install: all
 	$(INSTALL) -D -m 0644 man/aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
 	$(INSTALL) -D -m 0644 man/aklog.1 $(DESTDIR)$(MAN1)/aklog.1
 	$(INSTALL) -D -m 0644 conf/cellservdb.conf $(DESTDIR)$(DATADIR)/cellservdb.conf
-	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/kafs/cellservdb.conf
+	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/kafs/client.conf
 	$(INSTALL) -D -m 0644 conf/kafs_dns.conf $(DESTDIR)$(ETCDIR)/request-key.d/kafs_dns.conf
 	$(INSTALL) -D -m 0644 conf/kafs-config.service $(DESTDIR)$(UNITDIR)/kafs-config.service
 	$(INSTALL) -D -m 0644 conf/afs.mount $(DESTDIR)$(UNITDIR)/afs.mount
-	$(MKDIR) -m755 $(DESTDIR)$(ETCDIR)/kafs/cellservdb.d
+	$(MKDIR) -m755 $(DESTDIR)$(ETCDIR)/kafs/client.d
 	$(MKDIR) -m755 $(DESTDIR)/afs
 
 ###############################################################################
@@ -97,9 +97,10 @@ ZSRCBALL := rpmbuild/SOURCES/$(ZTARBALL)
 
 BUILDID	:= .local
 dist	:= $(word 2,$(shell grep -r "^%dist" /etc/rpm /usr/lib/rpm))
-release	:= $(word 2,$(shell grep ^Release: $(SPECFILE)))
-release	:= $(subst %{?dist},$(dist),$(release))
-release	:= $(subst %{?buildid},$(BUILDID),$(release))
+release3:= $(word 2,$(shell grep ^Release: $(SPECFILE)))
+release2:= $(subst %{?dist},$(dist),$(release3))
+release1:= $(subst %{?buildid},$(BUILDID),$(release2))
+release	:= $(subst %{?distprefix},,$(release1))
 rpmver	:= $(VERSION)-$(release)
 SRPM	:= rpmbuild/SRPMS/kafs-client-$(rpmver).src.rpm
 

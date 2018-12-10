@@ -1,5 +1,5 @@
 /*
- * Cell server database parser.
+ * kAFS config and cell database parser.
  *
  * Copyright (C) David Howells (dhowells@redhat.com) 2018
  *
@@ -144,9 +144,9 @@ extern int kafs_dns_lookup_vlservers(struct kafs_server_list *vsl,
 /*
  * cell_lookup.c
  */
+extern struct kafs_profile kafs_config_profile;
 extern struct kafs_cell_db *kafs_cellserv_db;
-extern struct kafs_profile kafs_cellserv_profile;
-extern int kafs_init_celldb(const char *const *files,
+extern int kafs_read_config(const char *const *files,
 			    struct kafs_report *report);
 extern struct kafs_cell *kafs_lookup_cell(const char *cell_name,
 					  struct kafs_lookup_context *ctx);

@@ -15,9 +15,8 @@ BuildRequires: keyutils-libs-devel
 BuildRequires: openssl-devel
 
 #
-# Need this for the upcall program to do DNS lookups.  v1.5.11 can read the
-# kAFS config files:
-#	/etc/kafs/cellservdb.conf
+# Need this for the upcall program to do DNS lookups.
+#	/etc/kafs/client.conf
 #
 %global datadir %{_datarootdir}/kafs
 
@@ -129,8 +128,8 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_libdir}/libkafs_client.so.%{libapiversion}
 %{_libdir}/libkafs_client.so.%{libapivermajor}
 %{datadir}
-%config(noreplace) %{_sysconfdir}/kafs/cellservdb.conf
-%config(noreplace) %{_sysconfdir}/kafs/cellservdb.d
+%config(noreplace) %{_sysconfdir}/kafs/client.conf
+%config(noreplace) %{_sysconfdir}/kafs/client.d
 
 %files libs-devel
 %{_libdir}/libkafs_client.so
