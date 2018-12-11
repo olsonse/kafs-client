@@ -35,6 +35,12 @@ static void verbose(const char *fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
+	if (isatty(2)) {
+		vprintf(fmt, va);
+		putchar('\n');
+	} else {
+		vsyslog(LOG_INFO, fmt, va);
+	}
 	vprintf(fmt, va);
 	putchar('\n');
 	va_end(va);
@@ -137,6 +143,11 @@ int main(int argc, char *argv[])
 			usage(argv[0]);
 			break;
 		}
+	}
+
+	if (!redirect_to_stdout) {
+		openlog("kafs-preload", 0, LOG_USER);
+		syslog(LOG_NOTICE, "kAFS: Preloading cell database");
 	}
 
 	argc -= optind;
