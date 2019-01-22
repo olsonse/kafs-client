@@ -62,6 +62,39 @@ static void _error(const char *fmt, ...)
 }
 
 /*
+ * Write a string to a proc file.
+ */
+static void write_to_proc(const char *file, const char *str, bool redirect_to_stdout)
+{
+	int fd = 1, n;
+
+	if (!str)
+		return;
+
+	if (redirect_to_stdout) {
+		printf("WRITE '%s' TO %s\n", str, file);
+		return;
+	}
+
+	fd = open(file, O_WRONLY);
+	if (fd == -1) {
+		_error("Can't open %s: %m", file);
+		exit(1);
+	}
+
+	n = strlen(str);
+	if (write(fd, str, n) != n) {
+		_error("Can't write '%s' to %s: %m", str, file);
+		exit(1);
+	}
+
+	if (close(fd) == -1) {
+		_error("Can't close %s: %m", file);
+		exit(1);
+	}
+}
+
+/*
  * Parse the cell database file
  */
 int do_preload(const struct kafs_cell_db *db, bool redirect_to_stdout)
@@ -104,33 +137,8 @@ int do_preload(const struct kafs_cell_db *db, bool redirect_to_stdout)
 		}
 	}
 
-	if (kafs_this_cell) {
-		if (!redirect_to_stdout) {
-			fd = open("/proc/net/afs/rootcell", O_WRONLY);
-			if (fd == -1) {
-				_error("Can't open /proc/fs/afs/rootcell: %m");
-				exit(1);
-			}
-		}
-
-		n = strlen(kafs_this_cell);
-		if (write(fd, kafs_this_cell, n) != n) {
-			_error("Can't set root cell '%s': %m", kafs_this_cell);
-			exit(1);
-		}
-
-		if (!redirect_to_stdout) {
-			if (close(fd) == -1) {
-				_error("Can't close /proc/fs/afs/rootcell: %m");
-				exit(1);
-			}
-		} else {
-			if (write(1, "\n", 1) == -1)
-				perror("stdout");
-		}
-
-	}
-
+	write_to_proc("/proc/net/afs/rootcell", kafs_this_cell, redirect_to_stdout);
+	write_to_proc("/proc/net/afs/sysname", kafs_sysname, redirect_to_stdout);
 	exit(0);
 }
 

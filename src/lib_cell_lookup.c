@@ -24,6 +24,7 @@ static const char *const kafs_std_config[] = {
 struct kafs_profile kafs_config_profile = { .name = "<kafsconfig>" };
 struct kafs_cell_db *kafs_cellserv_db;
 const char *kafs_this_cell;
+const char *kafs_sysname;
 
 #define verbose(r, fmt, ...)						\
 	do {								\
@@ -72,6 +73,11 @@ static void kafs_read_defaults(struct kafs_profile *prof, struct kafs_report *re
 	p = kafs_profile_get_string(def, "thiscell", report);
 	if (p)
 		kafs_this_cell = p;
+
+	/* Find the @sys substitutions (sysname = <sub> <sub> ...) */
+	p = kafs_profile_get_string(def, "sysname", report);
+	if (p)
+		kafs_sysname = p;
 }
 
 /*
