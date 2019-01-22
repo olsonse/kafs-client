@@ -41,8 +41,6 @@ static void verbose(const char *fmt, ...)
 	} else {
 		vsyslog(LOG_INFO, fmt, va);
 	}
-	vprintf(fmt, va);
-	putchar('\n');
 	va_end(va);
 }
 
