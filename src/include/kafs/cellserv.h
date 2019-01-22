@@ -146,6 +146,7 @@ extern int kafs_dns_lookup_vlservers(struct kafs_server_list *vsl,
  */
 extern struct kafs_profile kafs_config_profile;
 extern struct kafs_cell_db *kafs_cellserv_db;
+extern const char *kafs_this_cell;
 extern int kafs_read_config(const char *const *files,
 			    struct kafs_report *report);
 extern struct kafs_cell *kafs_lookup_cell(const char *cell_name,

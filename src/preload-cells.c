@@ -68,7 +68,7 @@ int do_preload(const struct kafs_cell_db *db, bool redirect_to_stdout)
 {
 	unsigned int i;
 	char buf[4096];
-	int fd;
+	int fd, n;
 
 	if (!redirect_to_stdout) {
 		fd = open("/proc/fs/afs/cells", O_WRONLY);
@@ -82,7 +82,6 @@ int do_preload(const struct kafs_cell_db *db, bool redirect_to_stdout)
 
 	for (i = 0; i < db->nr_cells; i++) {
 		const struct kafs_cell *cell = db->cells[i];
-		int n;
 
 		n = snprintf(buf, sizeof(buf) - 1, "add %s", cell->name);
 		if (write(fd, buf, n) != n) {
@@ -103,6 +102,33 @@ int do_preload(const struct kafs_cell_db *db, bool redirect_to_stdout)
 			_error("Can't close /proc/fs/afs/cells: %m");
 			exit(1);
 		}
+	}
+
+	if (kafs_this_cell) {
+		if (!redirect_to_stdout) {
+			fd = open("/proc/net/afs/rootcell", O_WRONLY);
+			if (fd == -1) {
+				_error("Can't open /proc/fs/afs/rootcell: %m");
+				exit(1);
+			}
+		}
+
+		n = strlen(kafs_this_cell);
+		if (write(fd, kafs_this_cell, n) != n) {
+			_error("Can't set root cell '%s': %m", kafs_this_cell);
+			exit(1);
+		}
+
+		if (!redirect_to_stdout) {
+			if (close(fd) == -1) {
+				_error("Can't close /proc/fs/afs/rootcell: %m");
+				exit(1);
+			}
+		} else {
+			if (write(1, "\n", 1) == -1)
+				perror("stdout");
+		}
+
 	}
 
 	exit(0);

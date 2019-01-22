@@ -23,6 +23,7 @@ static const char *const kafs_std_config[] = {
 
 struct kafs_profile kafs_config_profile = { .name = "<kafsconfig>" };
 struct kafs_cell_db *kafs_cellserv_db;
+const char *kafs_this_cell;
 
 #define verbose(r, fmt, ...)						\
 	do {								\
@@ -54,6 +55,26 @@ error:
 }
 
 /*
+ * Read the [defaults] section.
+ */
+static void kafs_read_defaults(struct kafs_profile *prof, struct kafs_report *report)
+{
+	const struct kafs_profile *def;
+	const char *p;
+
+	def = kafs_profile_find_first_child(prof, kafs_profile_value_is_list, "defaults", report);
+	if (!def) {
+		verbose(report, "Cannot find [defaults] section");
+		return;
+	}
+
+	/* Find the current cell name (thiscell = <cellname>) */
+	p = kafs_profile_get_string(def, "thiscell", report);
+	if (p)
+		kafs_this_cell = p;
+}
+
+/*
  * Read the configuration and initialise the cell database.
  */
 int kafs_read_config(const char *const *files, struct kafs_report *report)
@@ -70,6 +91,7 @@ int kafs_read_config(const char *const *files, struct kafs_report *report)
 	if (!kafs_cellserv_db)
 		return -1;
 
+	kafs_read_defaults(&kafs_config_profile, report);
 	return 0;
 }
 
