@@ -13,6 +13,7 @@ Source0:	https://www.infradead.org/~dhowells/kafs/kafs-client-%{version}.tar.bz2
 BuildRequires: krb5-devel
 BuildRequires: keyutils-libs-devel
 BuildRequires: openssl-devel
+BuildRequires: gcc
 
 #
 # Need this for the upcall program to do DNS lookups.
