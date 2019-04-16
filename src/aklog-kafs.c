@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <ctype.h>
 #include <keyutils.h>
 #include <krb5/krb5.h>
@@ -247,6 +248,42 @@ key_too_short:
 	exit(1);
 }
 
+/*
+ * Read the name of default cell.
+ */
+static char *get_default_cell(void)
+{
+	static const char rootcell[] = "/proc/net/afs/rootcell";
+	ssize_t n;
+	char buf[260], *nl, *cell;
+	int fd;
+
+	fd = open(rootcell, O_RDONLY);
+	OSERROR(fd, rootcell);
+	n = read(fd, buf, sizeof(buf) - 2);
+	OSERROR(n, rootcell);
+	close(n);
+	if (n == 0)
+		goto unset;
+
+	buf[n] = 0;
+	nl = memchr(buf, '\n', n);
+	if (nl == buf)
+		goto unset;
+	*nl = 0;
+
+	cell = strdup(buf);
+	OSZERROR(cell, "strdup");
+	return cell;
+
+unset:
+	fprintf(stderr, "error: The default cell is not set\n");
+	exit(1);
+}
+
+/*
+ *
+ */
 int main(int argc, char **argv)
 {
 	char *cell, *realm, *princ, *desc, *p;
@@ -258,14 +295,19 @@ int main(int argc, char **argv)
 	krb5_ccache cc;
 	krb5_creds search_cred, *creds;
 
-	if (argc < 2 || argc > 3) {
-		fprintf(stderr, "Usage: aklog <cell> [<realm>]\n");
+	if (argc < 1 || argc > 3 ||
+	    (argc == 2 && strcmp(argv[1], "--help") == 0)) {
+		fprintf(stderr, "Usage: aklog-kafs [<cell> [<realm>]]\n");
 		exit(1);
 	}
 
-	cell = argv[1];
+	if (argc == 1)
+		cell = get_default_cell();
+	else
+		cell = argv[1];
+
 	if (argc == 3) {
-		realm = strdup(argv[3]);
+		realm = strdup(argv[2]);
 		OSZERROR(realm, "strdup");
 	} else {
 		realm = strdup(cell);
