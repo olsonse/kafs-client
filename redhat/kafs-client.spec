@@ -3,7 +3,7 @@
 %global libapiversion %{libapivermajor}.1
 
 Name:		kafs-client
-Version:	0.1
+Version:	0.2
 Release:	1%{?dist}%{?buildid}
 Summary:	The basic tools for kAFS and mounter for the AFS dynamic root
 License:	GPLv2+
@@ -144,5 +144,9 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_mandir}/man1/aklog.1*
 
 %changelog
+* Tue Apr 16 2019 David Howells <dhowells@redhat.com> 0.2-1
+- Improve aklog-kafs and its manpage.
+- rpm: Depend on filesystem-afs for /afs dir installation.
+
 * Fri Feb 9 2018 David Howells <dhowells@redhat.com> 0.1-1
 - Initial commit
