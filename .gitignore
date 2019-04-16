@@ -5,3 +5,4 @@ kafs-dns
 *.o
 *.os
 libkafs_client.so*
+TAGS

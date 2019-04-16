@@ -50,11 +50,20 @@ all:
 #
 ###############################################################################
 MAN1	:= $(MANDIR)/man1
+MAN5	:= $(MANDIR)/man5
+MAN7	:= $(MANDIR)/man7
+MAN8	:= $(MANDIR)/man8
 
 install: all
 	$(MAKE) -C src install
-	$(INSTALL) -D -m 0644 man/aklog-kafs.1 $(DESTDIR)$(MAN1)/aklog-kafs.1
-	$(INSTALL) -D -m 0644 man/aklog.1 $(DESTDIR)$(MAN1)/aklog.1
+	$(MKDIR) -p -m755 $(DESTDIR)$(MAN1)/
+	$(MKDIR) -p -m755 $(DESTDIR)$(MAN5)/
+	$(MKDIR) -p -m755 $(DESTDIR)$(MAN7)/
+	$(MKDIR) -p -m755 $(DESTDIR)$(MAN8)/
+	$(INSTALL) -D -m 0644 man/*.1 $(DESTDIR)$(MAN1)/
+	$(INSTALL) -D -m 0644 man/*.5 $(DESTDIR)$(MAN5)/
+	$(INSTALL) -D -m 0644 man/*.7 $(DESTDIR)$(MAN7)/
+	$(INSTALL) -D -m 0644 man/*.8 $(DESTDIR)$(MAN8)/
 	$(INSTALL) -D -m 0644 conf/cellservdb.conf $(DESTDIR)$(DATADIR)/cellservdb.conf
 	$(INSTALL) -D -m 0644 conf/etc.conf $(DESTDIR)$(ETCDIR)/kafs/client.conf
 	$(INSTALL) -D -m 0644 conf/kafs_dns.conf $(DESTDIR)$(ETCDIR)/request-key.d/kafs_dns.conf
