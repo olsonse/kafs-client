@@ -315,9 +315,6 @@ static int dns_query_AFSDB(struct kafs_server_list *vsl,
 		u_char buf[NS_PACKETSZ];
 	} response;		/* response buffers */
 
-	vsl->source = kafs_record_from_dns_afsdb;
-	vsl->status = kafs_lookup_good;
-
 	verbose("Get AFSDB RR for cell name:'%s'", cell_name);
 
 	/* query the dns for an AFSDB resource record */
@@ -346,6 +343,8 @@ static int dns_query_AFSDB(struct kafs_server_list *vsl,
 		return 0;
 	}
 
+	vsl->source = kafs_record_from_dns_afsdb;
+
 	if (ns_initparse(response.buf, response_len, &handle) < 0) {
 		ctx->report.error("%s: ns_initparse: %s",
 				  cell_name, hstrerror(h_errno));
@@ -354,6 +353,7 @@ static int dns_query_AFSDB(struct kafs_server_list *vsl,
 	}
 
 	/* look up the hostnames we've obtained to get the actual addresses */
+	vsl->status = kafs_lookup_good;
 	return kafs_parse_afsdb(vsl, cell_name, subtype, handle, ns_s_an, ctx);
 }
 
@@ -478,8 +478,6 @@ static int dns_query_SRV(struct kafs_server_list *vsl,
 	enum dns_payload_protocol_type protocol;
 	char name[1024];
 
-	vsl->source = kafs_record_from_dns_srv;
-
 	snprintf(name, sizeof(name), "_%s._%s.%s",
 		 service_name, proto_name, domain_name);
 
@@ -509,6 +507,8 @@ static int dns_query_SRV(struct kafs_server_list *vsl,
 		}
 		return 0;
 	}
+
+	vsl->source = kafs_record_from_dns_srv;
 
 	if (ns_initparse(response.buf, response_len, &handle) < 0) {
 		ctx->report.error("%s: ns_initparse: %s",

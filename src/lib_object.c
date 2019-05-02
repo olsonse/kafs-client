@@ -113,6 +113,8 @@ int kafs_transfer_server_list(struct kafs_server_list *to,
 {
 	unsigned int i, nr = from->nr_servers;
 
+	to->source = from->source;
+	to->status = from->status;
 	to->nr_servers = nr;
 	to->max_servers = from->max_servers;
 	to->ttl = from->ttl;
