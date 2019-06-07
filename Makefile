@@ -70,7 +70,6 @@ install: all
 	$(INSTALL) -D -m 0644 conf/kafs-config.service $(DESTDIR)$(UNITDIR)/kafs-config.service
 	$(INSTALL) -D -m 0644 conf/afs.mount $(DESTDIR)$(UNITDIR)/afs.mount
 	$(MKDIR) -m755 $(DESTDIR)$(ETCDIR)/kafs/client.d
-	$(MKDIR) -m755 $(DESTDIR)/afs
 
 ###############################################################################
 #

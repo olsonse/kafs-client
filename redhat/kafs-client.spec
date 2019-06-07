@@ -5,11 +5,12 @@
 Name:		kafs-client
 Version:	0.1
 Release:	1%{?dist}%{?buildid}
-Summary:	The basic tools for kAFS and the /afs dynamic root
+Summary:	The basic tools for kAFS and mounter for the AFS dynamic root
 License:	GPLv2+
 URL:		https://www.infradead.org/~dhowells/kafs/
 Source0:	https://www.infradead.org/~dhowells/kafs/kafs-client-%{version}.tar.bz2
 
+Requires: filesystem-afs
 BuildRequires: krb5-devel
 BuildRequires: keyutils-libs-devel
 BuildRequires: openssl-devel
@@ -55,12 +56,12 @@ filesystem.  These provide things like configuration parsing and DNS lookups.
 # needs to be uninstalled be able to install OpenAFS or Auristor.
 #
 %package compat
-Summary: AFS compatibility package, providing access through /afs
+Summary: AFS compatibility package
 Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description compat
-Compatibility package providing standard AFS names for tools and locations such
-as /afs and aklog.  This package must be uninstalled for kAFS to coexist with
+Compatibility package providing standard AFS names for tools such as
+aklog.  This package must be uninstalled for kAFS to coexist with
 another AFS implementation (such as OpenAFS).
 
 %define _hardened_build 1
@@ -116,7 +117,6 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %files
 %doc README
 %license LICENCE.GPL
-/afs
 %{_bindir}/aklog-kafs
 %{_sbindir}/kafs-check-config
 %{_unitdir}/*
