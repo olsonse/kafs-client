@@ -90,8 +90,8 @@ distclean: clean
 #
 ###############################################################################
 $(ZTARBALL):
-	git archive --prefix=kafs-client-$(VERSION)/ --format tar -o $(TARBALL) HEAD
-	bzip2 -9 <$(TARBALL) >$(ZTARBALL)
+	git archive --prefix=kafs-client-$(VERSION)/ --format tar HEAD | \
+	bzip2 -9 >$(ZTARBALL)
 
 tarball: $(ZTARBALL)
 
@@ -123,12 +123,11 @@ RPMBUILDDIRS := \
 RPMFLAGS := \
 	--define "buildid $(BUILDID)"
 
-rpm:
+rpm: tarball
 	mkdir -p rpmbuild
 	chmod ug-s rpmbuild
 	mkdir -p rpmbuild/{SPECS,SOURCES,BUILD,BUILDROOT,RPMS,SRPMS}
-	git archive --prefix=kafs-client-$(VERSION)/ --format tar -o $(SRCBALL) HEAD
-	bzip2 -9 <$(SRCBALL) >$(ZSRCBALL)
+	cp $(ZTARBALL) $(ZSRCBALL)
 	rpmbuild -ts $(ZSRCBALL) --define "_srcrpmdir rpmbuild/SRPMS" $(RPMFLAGS)
 	rpmbuild --rebuild $(SRPM) $(RPMBUILDDIRS) $(RPMFLAGS)
 
