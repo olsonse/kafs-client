@@ -3,7 +3,7 @@
 %global libapiversion %{libapivermajor}.1
 
 Name:		kafs-client
-Version:	0.2
+Version:	0.3
 Release:	1%{?dist}%{?buildid}
 Summary:	The basic tools for kAFS and mounter for the AFS dynamic root
 License:	GPLv2+
@@ -64,14 +64,14 @@ Compatibility package providing standard AFS names for tools such as
 aklog.  This package must be uninstalled for kAFS to coexist with
 another AFS implementation (such as OpenAFS).
 
-%define _hardened_build 1
+%global _hardened_build 1
 %global docdir %{_docdir}/kafs-client
 
 %prep
 %setup -q
 
 %build
-make all \
+%make_build \
 	ETCDIR=%{_sysconfdir} \
 	BINDIR=%{_bindir} \
 	SBINDIR=%{_sbindir} \
@@ -89,7 +89,7 @@ mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_sysconfdir}
 mkdir -p %{buildroot}%{_datarootdir}
 
-make DESTDIR=%{buildroot} install \
+%make_install \
 	ETCDIR=%{_sysconfdir} \
 	BINDIR=%{_bindir} \
 	SBINDIR=%{_sbindir} \
@@ -132,6 +132,7 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_libdir}/libkafs_client.so.%{libapiversion}
 %{_libdir}/libkafs_client.so.%{libapivermajor}
 %{datadir}
+%{_sysconfdir}/kafs
 %config(noreplace) %{_sysconfdir}/kafs/client.conf
 %config(noreplace) %{_sysconfdir}/kafs/client.d
 
@@ -144,6 +145,9 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_mandir}/man1/aklog.1*
 
 %changelog
+* Fri Jul 5 2019 David Howells <dhowells@redhat.com> 0.3-1
+- Address Fedora packaging review comments [RH BZ 1724281].
+
 * Tue Apr 16 2019 David Howells <dhowells@redhat.com> 0.2-1
 - Improve aklog-kafs and its manpage.
 - rpm: Depend on filesystem-afs for /afs dir installation.
