@@ -1,0 +1,15 @@
+changelog
+copyright
+kafs-client/
+kafs-client.afs.mount
+kafs-client.service
+kafs-client-dev/
+*.log
+*.substvars
+files
+debhelper-build-stamp
+*.postinst.debhelper
+*.prerm.debhelper
+*.postrm.debhelper
+*.swp
+tmp/
