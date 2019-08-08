@@ -1,0 +1,8 @@
+afs/
+etc/
+usr/bin
+usr/sbin
+usr/libexec
+usr/share/man
+usr/share/kafs-client/cellservdb.conf usr/share/kafs
+usr/lib/*/*.so.*

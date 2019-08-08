@@ -1,0 +1,42 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+DH_VERBOSE = 1
+export DESTDIR=$(CURDIR)/debian/kafs-client/
+export SBINDIR=/usr/sbin/
+export LIBDIR=/usr/lib/x86_64-linux-gnu
+
+# see EXAMPLES in dpkg-buildflags(1) and read /usr/share/dpkg/*
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+# main packaging script based on dh7 syntax
+%:
+	dh $@ --with systemd
+
+build binary :  $(CURDIR)/debian/changelog $(CURDIR)/debian/copyright
+
+override_dh_auto_install:
+	mkdir -p $(CURDIR)/debian/tmp/afs
+	dh_auto_install
+	cp $(CURDIR)/conf/kafs-config.service  \
+	   $(CURDIR)/debian/kafs-client.service
+	cat $(CURDIR)/conf/afs.mount | sed -e 's/kafs-config/kafs-client/' \
+	   > $(CURDIR)/debian/kafs-client.afs.mount
+	dh_systemd_enable --name=afs
+	rm $(CURDIR)/debian/tmp/usr/share/man/man1/aklog.1
+
+$(CURDIR)/debian/changelog : $(CURDIR)/debian/mk_changelog
+	$(CURDIR)/debian/mk_changelog > $(CURDIR)/debian/changelog
+
+$(CURDIR)/debian/copyright : $(CURDIR)/LICENCE.GPL
+	cp $(CURDIR)/LICENCE.GPL $(CURDIR)/debian/copyright
