@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 # See debhelper(7) (uncomment to enable)
 # output every command that modifies files on the build system.
+export DH_VERBOSE = 1
 DH_VERBOSE = 1
 export DESTDIR=$(CURDIR)/debian/kafs-client/
 export SBINDIR=/usr/sbin/
@@ -21,7 +22,7 @@ include /usr/share/dpkg/default.mk
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@ --with systemd
+	dh $@
 
 build binary :  $(CURDIR)/debian/changelog $(CURDIR)/debian/copyright
 
@@ -29,11 +30,14 @@ override_dh_auto_install:
 	mkdir -p $(CURDIR)/debian/tmp/afs
 	dh_auto_install
 	cp $(CURDIR)/conf/kafs-config.service  \
-	   $(CURDIR)/debian/kafs-client.service
-	cat $(CURDIR)/conf/afs.mount | sed -e 's/kafs-config/kafs-client/' \
-	   > $(CURDIR)/debian/kafs-client.afs.mount
-	dh_systemd_enable --name=afs
+	   $(CURDIR)/debian/kafs-client.kafs-config.service
+	cp $(CURDIR)/conf/afs.mount \
+	   $(CURDIR)/debian/kafs-client.afs.mount
 	rm $(CURDIR)/debian/tmp/usr/share/man/man1/aklog.1
+
+override_dh_installsystemd:
+	dh_installsystemd --name=kafs-config
+	dh_installsystemd --name=afs
 
 $(CURDIR)/debian/changelog : $(CURDIR)/debian/mk_changelog
 	$(CURDIR)/debian/mk_changelog > $(CURDIR)/debian/changelog
