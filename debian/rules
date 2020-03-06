@@ -43,4 +43,4 @@ $(CURDIR)/debian/changelog : $(CURDIR)/debian/mk_changelog
 	$(CURDIR)/debian/mk_changelog > $(CURDIR)/debian/changelog
 
 $(CURDIR)/debian/copyright : $(CURDIR)/LICENCE.GPL
-	cp $(CURDIR)/LICENCE.GPL $(CURDIR)/debian/copyright
+	$(CURDIR)/debian/mk_copyright > $(CURDIR)/debian/copyright

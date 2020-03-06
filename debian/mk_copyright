@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+# vim: ts=2:sw=2:et:tw=80:nowrap
+
+import os
+from subprocess import Popen, PIPE
+
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+class GitAuthorship(object):
+  def __init__(self):
+    p = Popen(['git', 'log', '--oneline', '--format=%ad:%an:%ae',
+               '--date=format:%Y'], stdout=PIPE)
+    o = p.communicate()[0].decode()
+    self.authors = dict()
+    for yr, name, email in (l.split(':') for l in o.splitlines()):
+      self.authors.setdefault((name, email), set()).add(int(yr))
+
+  class YearLister(object):
+    def __init__(self, years):
+      self.years = sorted(years)
+      self.L = list()
+      self.begin = self.years[0]
+      self.incr = 0
+
+    def add_year(self, year):
+      if year == self.begin + self.incr + 1:
+          self.incr += 1
+          return
+      elif self.incr != 0:
+        self.L.append('{}-{}'.format(self.begin, self.begin + self.incr))
+      else:
+        self.L.append(str(self.begin))
+      self.begin = year
+      self.incr = 0
+
+    def __call__(self):
+      for year in self.years[1:]:
+        self.add_year(year)
+      self.add_year(-1)
+      return ', '.join(self.L)
+
+  def __iter__(self):
+    authors = sorted(self.authors.items(),
+                     key=lambda a_yrs: (min(a_yrs[1]),max(a_yrs[1])))
+    for (name, email), years in authors:
+      yield '{} {} <{}>'.format(self.YearLister(years)(), name, email)
+    
+
+def main():
+  c = GitAuthorship()
+  with open(os.path.join(THIS_DIR, 'copyright.tmpl')) as f:
+    print(f.read().format(authorship='\n   '.join(c)), end='')
+
+if __name__=='__main__':
+  main()
