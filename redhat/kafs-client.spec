@@ -3,7 +3,7 @@
 %global libapiversion %{libapivermajor}.1
 
 Name:		kafs-client
-Version:	0.3
+Version:	0.4
 Release:	1%{?dist}%{?buildid}
 Summary:	The basic tools for kAFS and mounter for the AFS dynamic root
 License:	GPLv2+
@@ -145,6 +145,10 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_mandir}/man1/aklog.1*
 
 %changelog
+* Wed May 20 2020 David Howells <dhowells@redhat.com> 0.4-1
+- Use AF_ALG rather than OpenSSL's libcrypto.
+- Move the aklog.1 manpage to the -compat rpm.
+
 * Fri Jul 5 2019 David Howells <dhowells@redhat.com> 0.3-1
 - Address Fedora packaging review comments [RH BZ 1724281].
 
