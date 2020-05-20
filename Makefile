@@ -134,6 +134,8 @@ rpm: tarball
 rpmlint: rpm
 	rpmlint $(SRPM) $(CURDIR)/rpmbuild/RPMS/*/kafs-client-{,debuginfo-}$(rpmver).*.rpm
 
+.PHONY: rpmlint rpm tarball $(ZTARBALL)
+
 ###############################################################################
 #
 # Build debugging
