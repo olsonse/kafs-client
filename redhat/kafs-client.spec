@@ -120,7 +120,7 @@ ln -s aklog-kafs %{buildroot}/%{_bindir}/aklog
 %{_bindir}/aklog-kafs
 %{_sbindir}/kafs-check-config
 %{_unitdir}/*
-%{_mandir}/man1/*.1*
+%{_mandir}/man1/aklog-kafs.1*
 %{_mandir}/man5/*.5*
 %{_mandir}/man7/*.7*
 %{_mandir}/man8/*.8*
