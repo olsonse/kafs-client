@@ -51,7 +51,7 @@
 #include "dns_afsdb.h"
 
 static const char *DNS_PARSE_VERSION = "2.0";
-static const char prog[] = "dns_afsdb";
+static const char prog[] = "kafs-dns";
 static const char key_type[] = "dns_resolver";
 static const char afsdb_query_type[] = "afsdb:";
 static key_serial_t key;
