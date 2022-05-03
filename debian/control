@@ -5,24 +5,33 @@ Build-Depends: debhelper (>= 12), libkrb5-dev, libkeyutils-dev, libssl-dev
 Maintainer: Spencer E. Olson <olsonse@umich.edu>
 Standards-Version: 4.5.0
 Homepage: https://www.infradead.org/~dhowells/kafs/
-Vcs-Git: git://git.infradead.org/users/dhowells/kafs-client.git
+Vcs-Git: http://github.com/olsonse/kafs-client.git
+Vcs-Browser: http://github.com/olsonse/kafs-client
 
 Package: kafs-client
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ keyutils,
 Description: Basic tools for kAFS and mounter for the AFS dynamic root
- Provide basic AFS-compatible tools for kAFS and systemd scripts to mount the
- dynamic root on /afs and preload the cell database.
+ kAFS is a Linux kernel implementation of the AFS file system.
+ .
+ This package contains the basic AFS-compatible tools for kAFS and systemd
+ scripts to mount the dynamic root on /afs and preload the cell database.
  .
  This package also provides a library of shareable routines for dealing with the
  kAFS filesystem.  These provide things like configuration parsing and DNS
  lookups.
 
 Package: kafs-client-dev
+Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, kafs-client
-Description: Basic tools for kAFS and mounter for the AFS dynamic root
- Provide basic AFS-compatible tools for kAFS and systemd scripts to mount the
- dynamic root on /afs and preload the cell database.
+Depends:
+ libkafs-client0 (= ${binary:Version}),
+ ${misc:Depends},
+Description: Development files for kAFS tool shared library
+ kAFS is a Linux kernel implementation of the AFS file system.
  .
- Provides headers for kafs-client libraries.
+ This package provides the headers and development files for the libkafs_client
+ shared library.
