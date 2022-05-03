@@ -36,7 +36,6 @@
 
 // command line switches
 bool opt_debug   = false;
-bool opt_help    = false;
 bool opt_verbose = false;
 
 struct rxrpc_key_sec2_v1 {
@@ -368,32 +367,38 @@ int main(int argc, char **argv)
 		case 'd':
 			opt_debug = true;
 			opt_verbose = true;
+      --argc;
 			break;
+		//default:
 		case 'h':
-			opt_help = true;
+			display_usage();
 			break;
 		case 'v':
 			opt_verbose = true;
+      --argc;
 			break;
-		default:
-			display_usage();
 		}
 	}
 
-	if (argc - optind > 2) {
+	if (opt_debug) {
+		printf("argc: %d\n", argc);
+		printf("optind: %d\n", optind);
+	}
+	if (argc > 3) {
 		fprintf(stderr, "ERROR: too many arguments\n");
 		display_usage();
 	}
-	if (strcmp(argv[optind], "--help") == 0) {
-		display_usage();
+
+	if (argc == 1) {
+		cell = get_default_cell();
+		if (opt_debug) {
+			printf("Cell from /proc/net/afs/rootcell: %s\n", cell);
+		}
+	} else {
+		cell = argv[optind];
 	}
 
-	if (argc - optind == 1)
-		cell = get_default_cell();
-	else
-		cell = argv[optind];
-
-	if (argc - optind == 2) {
+	if (argc == 2) {
 		realm = strdup(argv[optind + 1]);
 		OSZERROR(realm, "strdup");
 	} else {
@@ -401,6 +406,9 @@ int main(int argc, char **argv)
 		OSZERROR(realm, "strdup");
 		for (p = realm; *p; p++)
 			*p = toupper(*p);
+	}
+	if (opt_debug) {
+		printf("Realm: %s\n", realm);
 	}
 
 	for (p = cell; *p; p++)
@@ -445,8 +453,10 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	printf("plen=%zu tklen=%u rk=%zu\n",
-	       plen, creds->ticket.length, sizeof(*payload));
+	if (opt_verbose) {
+		printf("plen=%zu tklen=%u rk=%zu\n",
+			plen, creds->ticket.length, sizeof(*payload));
+	}
 
 	/* use version 1 of the key data interface */
 	payload->kver           = 1;
