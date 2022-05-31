@@ -353,6 +353,7 @@ void display_usage ()
 		"         uid-session\n"
 		"       Otherwise, a session keyring will be used first if found before \n"
 		"       automatically switching to the uid-session keyring.\n"
+		" -V    Show version and exit\n"
 	);
 	exit(1);
 }
@@ -377,7 +378,7 @@ int main(int argc, char **argv)
 
 	dest_keyring = 0;
 
-	while ((opt = getopt(argc, argv, "hvk:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvVk:")) != -1) {
 		switch (opt) {
 		case 'v':
 			++opt_verbose;
@@ -390,6 +391,9 @@ int main(int argc, char **argv)
 			else
 				display_usage();
 			break;
+		case 'V':
+			printf("kAFS client: %s\n", VERSION);
+			exit(0);
 		default:
 		case 'h':
 			display_usage();
