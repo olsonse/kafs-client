@@ -339,7 +339,7 @@ unset:
 /*
  * Display a short usage message and exit
  */
-void display_usage ()
+void display_usage (int exit_status)
 {
 	fprintf(stderr,
 		"Usage: \n"
@@ -355,7 +355,7 @@ void display_usage ()
 		"       automatically switching to the uid-session keyring.\n"
 		" -V    Show version and exit\n"
 	);
-	exit(1);
+	exit(exit_status);
 }
 
 /*
@@ -389,20 +389,21 @@ int main(int argc, char **argv)
 			else if (strcmp(optarg, "uid-session") == 0)
 				dest_keyring = KEY_SPEC_USER_SESSION_KEYRING;
 			else
-				display_usage();
+				display_usage(EXIT_FAILURE);
 			break;
 		case 'V':
 			printf("kAFS client: %s\n", VERSION);
 			exit(0);
 		default:
+			display_usage(EXIT_FAILURE);
 		case 'h':
-			display_usage();
+			display_usage(EXIT_SUCCESS);
 		}
 	}
 
 	if ((argc - optind) > 2) {
 		fprintf(stderr, "ERROR: unexpected arguments after options\n");
-		display_usage();
+		display_usage(EXIT_FAILURE);
 	}
 
 	if ((argc - optind) <= 0) {
